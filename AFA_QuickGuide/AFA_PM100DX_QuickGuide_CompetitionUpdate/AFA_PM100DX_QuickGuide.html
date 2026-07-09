@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TEAM A-FA PM100DX Quick Guide</title>
+  <style>
+    :root{
+      --ink:#1d2730;
+      --muted:#65717c;
+      --line:#dce2e8;
+      --bg:#f5f7f9;
+      --card:#fff;
+      --blue:#1759c7;
+      --red:#d93636;
+      --gray:#7a8794;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;background:var(--bg);color:var(--ink);
+      font:14px/1.45 system-ui,-apple-system,"Segoe UI","Noto Sans KR",sans-serif;
+    }
+    header{
+      height:70px;background:#fff;border-bottom:1px solid var(--line);
+      display:flex;align-items:center;gap:12px;padding:0 max(18px,calc((100vw - 1180px)/2));
+    }
+    .logo{width:48px;height:48px;object-fit:contain}
+    .title{font-size:17px;font-weight:800}
+    .sub{font-size:11px;color:var(--muted)}
+    .wrap{max-width:1180px;margin:0 auto;padding:22px 18px 42px}
+    .tabs{display:flex;gap:8px;border-bottom:1px solid var(--line);margin-bottom:22px}
+    .tab{
+      border:0;background:none;padding:10px 12px 9px;margin-bottom:-1px;
+      font:inherit;font-weight:700;color:var(--muted);cursor:pointer;
+      border-bottom:3px solid transparent;
+    }
+    .tab.active{color:var(--blue);border-color:var(--blue)}
+    .view{display:none}.view.active{display:block}
+    h1{font-size:27px;line-height:1.16;letter-spacing:-.04em;margin:0 0 8px}
+    .lead{margin:0 0 18px;color:var(--muted)}
+    .notice{
+      border-left:4px solid #b27500;background:#fff8e8;padding:10px 12px;
+      font-size:12px;color:#5d4c20;margin:0 0 18px;
+    }
+    .layout{display:grid;grid-template-columns:300px minmax(0,1fr);gap:18px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:8px}
+    .input-card{padding:16px;position:sticky;top:14px}
+    .input-card h2,.chart-card h2{font-size:15px;margin:0 0 4px}
+    .help{font-size:11px;color:var(--muted);margin:0 0 14px}
+    .field{margin-bottom:12px}
+    label{display:flex;justify-content:space-between;font-weight:700;font-size:12px;margin-bottom:5px}
+    label small{font-weight:500;color:var(--muted)}
+    input,select{
+      width:100%;height:36px;border:1px solid #cbd4dd;border-radius:5px;
+      padding:0 9px;background:#fff;font:inherit;color:var(--ink);
+    }
+    input:focus,select:focus{outline:2px solid #dbe8ff;border-color:var(--blue)}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    .line{border:0;border-top:1px solid #e9edf1;margin:14px 0}
+    .check{display:flex;gap:8px;align-items:flex-start;font-size:12px;margin:12px 0}
+    .check input{width:auto;height:auto;margin-top:3px}
+    button.action{
+      width:100%;height:36px;border:1px solid #bfc9d4;background:#fff;
+      border-radius:5px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;
+    }
+    button.action:hover{background:#f2f5f8}
+    button.primary{background:var(--blue);color:#fff;border-color:var(--blue);margin-top:8px}
+    .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+    .metric{padding:13px}
+    .metric .name{font-size:11px;color:var(--muted);min-height:30px}
+    .metric .value{font-size:22px;font-weight:800;letter-spacing:-.04em;white-space:nowrap}
+    .metric .note{font-size:10px;color:var(--muted);margin-top:3px}
+    .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .chart-card{padding:15px}
+    .chart-card p{font-size:11px;color:var(--muted);margin:0 0 8px}
+    .canvas-wrap{position:relative}
+    canvas{display:block;width:100%;height:300px;cursor:crosshair}
+    .tooltip{
+      position:absolute;display:none;pointer-events:none;background:rgba(255,255,255,.98);
+      border:1px solid #cbd4dd;border-radius:5px;padding:7px 9px;font-size:11px;
+      line-height:1.55;box-shadow:0 5px 16px rgba(0,0,0,.12);white-space:nowrap;
+    }
+    .legend{font-size:10px;color:var(--muted);margin-top:4px}
+    .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
+    .map-note{font-size:12px;color:#315486;background:#f2f6ff;border:1px solid #d9e5fb;padding:10px 12px;border-radius:6px;margin-bottom:18px}
+    footer{max-width:1180px;margin:0 auto;padding:0 18px 24px;color:var(--muted);font-size:10px}
+    @media(max-width:900px){
+      .layout{grid-template-columns:1fr}.input-card{position:static}
+      .chart-grid{grid-template-columns:1fr}
+    }
+    @media(max-width:540px){
+      .metrics{grid-template-columns:repeat(2,1fr)}
+      canvas{height:270px}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img class="logo" src="./A_FA_logo.png" alt="TEAM A-FA logo" onerror="this.style.display='none'">
+    <div>
+      <div class="title">TEAM A-FA · PM100DX Quick Guide</div>
+      <div class="sub">Initial parameter calculator and manual motor-map viewer</div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="tabs">
+      <button class="tab active" data-view="recommendView">추천 파라미터 설정</button>
+      <button class="tab" data-view="mapView">모터 맵 설정</button>
+    </div>
+
+    <!-- Tab 1: same input idea as the uploaded original -->
+    <section class="view active" id="recommendView">
+      <h1>컨트롤 추천 설정</h1>
+      <p class="lead">입력 조건으로 자동 모터 맵을 만들고, Break_Speed·I<sub>q</sub>·출력 관련 초기값을 계산한다.</p>
+      <div class="notice">DC Bus Current Limit은 추천 계산용 제한값이다. PM100DX 확정 세팅이 아니므로 실차 로그와 보호 로직으로 다시 검증해야 한다.</div>
+
+      <div class="layout">
+        <aside class="card input-card">
+          <h2>Input</h2>
+          <p class="help">기존 추천 입력은 유지하고, 안전 운용 및 차량 연동 검증값만 추가했다.</p>
+
+          <div class="field">
+            <label for="recMotor">Motor Type</label>
+            <select id="recMotor">
+              <option value="emrax228">EMRAX 228 MV</option>
+              <option value="emrax208">EMRAX 208 MV</option>
+            </select>
+          </div>
+
+          <div class="two">
+            <div class="field">
+              <label for="recVdc">배터리 전압 <small>V</small></label>
+              <input id="recVdc" type="number" min="50" max="700" step="1">
+            </div>
+            <div class="field">
+              <label for="recSag">전압 강하 <small>%</small></label>
+              <input id="recSag" type="number" min="0" max="40" step="1">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="recTorque">최대 토크 <small>Nm</small></label>
+            <input id="recTorque" type="number" min="1" max="250" step="1">
+          </div>
+
+          <div class="field">
+            <label for="recDcl">DC Bus Current Limit <small>A</small></label>
+            <input id="recDcl" type="number" min="1" max="500" step="1">
+          </div>
+
+          <div class="field">
+            <label for="recMaxRpm">예상 최대 RPM <small>RPM</small></label>
+            <input id="recMaxRpm" type="number" min="500" max="8000" step="100">
+          </div>
+
+          <hr class="line">
+          <p class="help">추가 검증 입력 <span style="font-weight:500">(기존 계산식·그래프 형식 유지)</span></p>
+
+          <div class="two">
+            <div class="field">
+              <label for="recDclUse">권장 DCL 사용률 <small>%</small></label>
+              <input id="recDclUse" type="number" min="50" max="100" step="1">
+            </div>
+            <div class="field">
+              <label for="recTargetSpeed">목표 최고 차속 <small>km/h</small></label>
+              <input id="recTargetSpeed" type="number" min="1" max="250" step="1" placeholder="선택">
+            </div>
+          </div>
+
+          <div class="two">
+            <div class="field">
+              <label for="recTireRadius">타이어 유효 반경 <small>mm</small></label>
+              <input id="recTireRadius" type="number" min="1" max="1000" step="1" placeholder="선택">
+            </div>
+            <div class="field">
+              <label for="recGearRatio">총 감속비 <small>Motor/Wheel</small></label>
+              <input id="recGearRatio" type="number" min="0.1" max="30" step="0.01" placeholder="선택">
+            </div>
+          </div>
+
+          <label class="check">
+            <input id="recRoadFit" type="checkbox">
+            <span><b>208 주행 데이터 보정 적용</b><br>208은 회귀식, 228은 전압·전류 보정비만 적용</span>
+          </label>
+
+          <button class="action" id="recReset">기본값으로 되돌리기</button>
+          <button class="action primary" id="copyToMap">추천값을 모터 맵 설정에 복사</button>
+        </aside>
+
+        <section>
+          <div class="metrics">
+            <article class="card metric"><div class="name">Break_Speed 추천값</div><div class="value" id="recBreakOut">-</div><div class="note" id="recBreakNote">-</div></article>
+            <article class="card metric"><div class="name">I<sub>q</sub> 세팅 추천값</div><div class="value" id="recIqOut">-</div><div class="note" id="recIqNote">-</div></article>
+            <article class="card metric"><div class="name">I<sub>d</sub> 세팅 추천값</div><div class="value" id="recIdOut">-</div><div class="note">Break 전 기준</div></article>
+            <article class="card metric"><div class="name">DC Bus Current 예상값</div><div class="value" id="recCurrentOut">-</div><div class="note" id="recCurrentNote">-</div></article>
+            <article class="card metric"><div class="name">Break 시 기계 출력</div><div class="value" id="recPowerOut">-</div><div class="note">Torque × ω</div></article>
+            <article class="card metric"><div class="name">유효 팩 전압</div><div class="value" id="recVeffOut">-</div><div class="note" id="recVeffNote">-</div></article>
+            <article class="card metric"><div class="name">권장 운용 DC Bus Current</div><div class="value" id="recTargetCurrentOut">-</div><div class="note" id="recTargetCurrentNote">DCL 사용률 기준</div></article>
+            <article class="card metric"><div class="name">안전 운용 Break_Speed</div><div class="value" id="recSafeBreakOut">-</div><div class="note" id="recSafeBreakNote">권장 DCL 사용률 기준</div></article>
+            <article class="card metric"><div class="name">목표 차속 기준 모터 RPM</div><div class="value" id="recVehicleRpmOut">-</div><div class="note" id="recVehicleRpmNote">차속·반경·감속비 입력 시 계산</div></article>
+            <article class="card metric"><div class="name">입력 RPM 기준 이론 차속</div><div class="value" id="recVehicleSpeedOut">-</div><div class="note" id="recVehicleSpeedNote">반경·감속비 입력 시 계산</div></article>
+          </div>
+
+          <div class="chart-grid">
+            <article class="card chart-card">
+              <h2>Torque & Power / RPM</h2>
+              <p>Break 전 일정 토크, 이후 일정전력 기준의 토크 감소.</p>
+              <div class="canvas-wrap">
+                <canvas id="recTorqueChart"></canvas>
+                <div class="tooltip" id="recTorqueTip"></div>
+              </div>
+              <div class="legend">
+                <span class="dot" style="background:#1759c7"></span>Torque
+                <span class="dot" style="background:#d93636;margin-left:10px"></span>Power
+                <span class="dot" style="background:#7a8794;margin-left:10px"></span>Break Speed
+              </div>
+            </article>
+
+            <article class="card chart-card">
+              <h2>I<sub>q</sub> & DC Bus Current / RPM</h2>
+              <p>DC Bus Current Limit과 계산된 전류를 함께 표시한다.</p>
+              <div class="canvas-wrap">
+                <canvas id="recCurrentChart"></canvas>
+                <div class="tooltip" id="recCurrentTip"></div>
+              </div>
+              <div class="legend">
+                <span class="dot" style="background:#1759c7"></span>I<sub>q</sub>
+                <span class="dot" style="background:#d93636;margin-left:10px"></span>DC Bus Current
+                <span class="dot" style="background:#7a8794;margin-left:10px"></span>Limit
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- Tab 2: manual map, separate from recommendation inputs -->
+    <section class="view" id="mapView">
+      <h1>설정값 기반 추정 모터 맵</h1>
+      <p class="lead">여기서는 직접 입력한 Break_Speed, I<sub>q</sub>, I<sub>d</sub>, Torque Limit만으로 모터 맵을 확인한다.</p>
+      <div class="map-note"><b>DC Bus Current는 이 탭의 입력 제한값이 아니다.</b> 현재 설정값으로부터 계산되어 그래프와 결과값으로만 표시된다. 추가된 DCL 검증 기준은 비교용이며 계산값을 제한하지 않는다.</div>
+
+      <div class="layout">
+        <aside class="card input-card">
+          <h2>모터 맵 파라미터</h2>
+          <p class="help">EMRAX 228 MV 이론식 기준</p>
+
+          <div class="two">
+            <div class="field">
+              <label for="mapVdc">배터리 전압 <small>V</small></label>
+              <input id="mapVdc" type="number" min="50" max="700" step="1">
+            </div>
+            <div class="field">
+              <label for="mapSag">전압 강하 <small>%</small></label>
+              <input id="mapSag" type="number" min="0" max="40" step="1">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="mapBreak">Break_Speed <small>RPM</small></label>
+            <input id="mapBreak" type="number" min="100" max="5500" step="50">
+          </div>
+
+          <div class="two">
+            <div class="field">
+              <label for="mapIq">I<sub>q</sub> Limit <small>A</small></label>
+              <input id="mapIq" type="number" min="1" max="500" step="1">
+            </div>
+            <div class="field">
+              <label for="mapId">|I<sub>d</sub>| Limit <small>A</small></label>
+              <input id="mapId" type="number" min="0" max="500" step="1">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="mapTorque">Torque Limit <small>Nm</small></label>
+            <input id="mapTorque" type="number" min="1" max="240" step="1">
+          </div>
+
+          <div class="two">
+            <div class="field">
+              <label for="mapMaxRpm">그래프 최대 RPM <small>RPM</small></label>
+              <input id="mapMaxRpm" type="number" min="100" max="5500" step="100">
+            </div>
+            <div class="field">
+              <label for="mapDclRef">DCL 검증 기준 <small>A · 선택</small></label>
+              <input id="mapDclRef" type="number" min="1" max="500" step="1" placeholder="선택">
+            </div>
+          </div>
+
+          <button class="action" id="mapReset">기본값으로 되돌리기</button>
+          <button class="action primary" id="mapCsv">현재 맵 CSV 다운로드</button>
+        </aside>
+
+        <section>
+          <div class="metrics">
+            <article class="card metric"><div class="name">Break_Speed</div><div class="value" id="mapBreakOut">-</div><div class="note">직접 입력</div></article>
+            <article class="card metric"><div class="name">Torque Plateau</div><div class="value" id="mapTorqueOut">-</div><div class="note" id="mapTorqueNote">-</div></article>
+            <article class="card metric"><div class="name">I<sub>q</sub> Plateau</div><div class="value" id="mapIqOut">-</div><div class="note">Torque / kT</div></article>
+            <article class="card metric"><div class="name">Peak DC Bus Current</div><div class="value" id="mapCurrentOut">-</div><div class="note" id="mapCurrentNote">이론식 계산값</div></article>
+            <article class="card metric"><div class="name">Break 시 기계 출력</div><div class="value" id="mapPowerOut">-</div><div class="note">Torque × ω</div></article>
+            <article class="card metric"><div class="name">DCL 검증 여유</div><div class="value" id="mapDclMarginOut">-</div><div class="note" id="mapDclMarginNote">검증 기준은 계산식에 사용하지 않음</div></article>
+          </div>
+
+          <article class="card chart-card">
+            <h2>Torque & DC Bus Current / RPM</h2>
+            <p>Break 전 일정 토크, 이후 일정전력 토크 감소. I<sub>d</sub>는 표시용 프로파일이며 현재 전류식에는 반영하지 않는다.</p>
+            <div class="canvas-wrap">
+              <canvas id="mapChart"></canvas>
+              <div class="tooltip" id="mapTip"></div>
+            </div>
+            <div class="legend">
+              <span class="dot" style="background:#1759c7"></span>Torque
+              <span class="dot" style="background:#d93636;margin-left:10px"></span>DC Bus Current
+              <span class="dot" style="background:#7a8794;margin-left:10px"></span>Break Speed
+            </div>
+          </article>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Offline calculator. Source: EMRAX 208/228 values, 2023 EMRAX 208 drive-log fit, and the supplied PM100DX quick-guide logic.
+  </footer>
+
+  <script src="./AFA_PM100DX_QuickGuide.js"></script>
+</body>
+</html>
